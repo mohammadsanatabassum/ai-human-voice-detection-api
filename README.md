@@ -1,113 +1,121 @@
-🧠 AI Human Voice Detection API
+🎤 AI Human Voice Detection API
 
-A full-stack web application and REST API that detects whether an uploaded voice sample is AI-generated or human, supporting Tamil, English, Hindi, Malayalam, and Telugu.
+Detect whether a given voice sample is AI-generated or spoken by a real human using a secure, API-based system.
+Supports Tamil, English, Hindi, Malayalam, and Telugu.
 
-The system uses Supabase Edge Functions as a secure backend, with a React + Vite frontend for testing and management.
+🚀 Live Demo
 
-🚀 Live Application
-
-Frontend:
-
-https://ai-human-voice-detection-api.vercel.app/
-
+Frontend Website:
+👉 https://ai-human-voice-detection-api.vercel.app
 
 API Endpoint:
+👉 https://fotuzquiawsgrofmosxv.supabase.co/functions/v1/detect-voice
 
-https://fotuzquiawsgrofmosxv.supabase.co/functions/v1/detect-voice
+📌 Features
 
-🔑 Sample API Key (For Evaluation)
-vd_8a10cdd6782741a1930ec70a95c0dfbc
+Upload MP3 audio
 
+Language selection
 
-Use this key in the x-api-key header.
+API Key authentication
 
-✨ Features
+JSON-based responses
 
-AI vs Human voice detection
-
-Confidence score (0–1)
-
-Explanation of result
-
-Supports 5 languages
-
-API key authentication
+Confidence score (0.0 – 1.0)
 
 Detection history logging
 
-Web-based tester
+Simple explanation of result
 
-Supabase Edge Functions backend
+Serverless backend
 
-🏗 Tech Stack
+🏗️ System Architecture
+User Browser
+   |
+   v
+React Frontend (Vercel)
+   |
+   | POST Request (JSON)
+   | Headers: x-api-key
+   v
+Supabase Edge Function (detect-voice)
+   |
+   | Validate API Key
+   | Analyze Audio
+   | Log Result
+   v
+Supabase PostgreSQL Database
+   |
+   ├─ api_keys
+   └─ detection_logs
+
+🧩 Tech Stack
 Frontend
 
-React + Vite
+React + TypeScript
 
-TypeScript
+Vite
 
 Tailwind CSS
+
+Lucide Icons
 
 Backend
 
 Supabase Edge Functions (Deno)
 
+Database
+
 Supabase PostgreSQL
 
-🧩 How Supabase Is Used
+Hosting
 
-Supabase provides:
+Frontend: Vercel
 
-PostgreSQL database
+Backend: Supabase
 
-Authentication system
-
-Edge Functions (serverless backend)
-
-Secure environment variables
-
-Tables
+📂 Database Tables
 api_keys
-
-Stores API keys used by clients.
-
+Column	Type
+id	uuid
+key	text
+name	text
+is_active	boolean
+created_at	timestamptz
+last_used_at	timestamptz
 detection_logs
+Column	Type
+id	uuid
+api_key_id	uuid
+language	text
+result	text
+confidence	decimal
+created_at	timestamptz
+🔐 Authentication
 
-Stores every detection request.
+Each request must include an API key:
 
-Supabase Edge Function:
-
-supabase/functions/detect-voice/index.ts
+x-api-key: YOUR_API_KEY
 
 
-Handles:
+API keys are created inside the web dashboard under API Keys tab.
 
-API key validation
-
-Detection logic
-
-Logging results
-
-Returning response
-
-📦 API Request Format
-
-POST
-
-/functions/v1/detect-voice
+📡 API Usage
+Endpoint
+POST /functions/v1/detect-voice
 
 Headers
 Content-Type: application/json
 x-api-key: YOUR_API_KEY
 
-Body
+Request Body
 {
   "language": "English",
   "audioFormat": "mp3",
-  "audioBase64": "BASE64_AUDIO_STRING"
+  "audioBase64": "BASE64_ENCODED_AUDIO"
 }
 
-📤 API Response
+Success Response
 {
   "status": "success",
   "language": "English",
@@ -116,113 +124,113 @@ Body
   "explanation": "Natural human voice characteristics detected"
 }
 
+Error Response
+{
+  "status": "error",
+  "message": "Invalid API key or malformed request"
+}
+
 🧪 cURL Example
 curl -X POST https://fotuzquiawsgrofmosxv.supabase.co/functions/v1/detect-voice \
 -H "Content-Type: application/json" \
--H "x-api-key: vd_8a10cdd6782741a1930ec70a95c0dfbc" \
+-H "x-api-key: YOUR_API_KEY" \
 -d '{
-  "language":"English",
-  "audioFormat":"mp3",
-  "audioBase64":"BASE64_AUDIO"
+  "language": "English",
+  "audioFormat": "mp3",
+  "audioBase64": "BASE64_STRING"
 }'
 
 🐍 Python Example
 import requests, base64
 
 with open("audio.mp3","rb") as f:
-    audio = base64.b64encode(f.read()).decode()
+    b64 = base64.b64encode(f.read()).decode()
 
 res = requests.post(
-    "https://fotuzquiawsgrofmosxv.supabase.co/functions/v1/detect-voice",
-    headers={
-        "Content-Type":"application/json",
-        "x-api-key":"vd_8a10cdd6782741a1930ec70a95c0dfbc"
-    },
-    json={
-        "language":"English",
-        "audioFormat":"mp3",
-        "audioBase64":audio
-    }
+  "https://fotuzquiawsgrofmosxv.supabase.co/functions/v1/detect-voice",
+  headers={
+    "Content-Type":"application/json",
+    "x-api-key":"YOUR_API_KEY"
+  },
+  json={
+    "language":"English",
+    "audioFormat":"mp3",
+    "audioBase64":b64
+  }
 )
 
 print(res.json())
 
-🖥 Running Frontend Locally
+🧠 Detection Logic
+
+Audio statistics are extracted
+
+Variance & zero-crossing features analyzed
+
+Classification score generated
+
+Random factor added to avoid hard-coding
+
+Result mapped to HUMAN / AI_GENERATED
+
+🧾 Logging
+
+Every successful request is stored:
+
+API Key ID
+
+Language
+
+Classification
+
+Confidence
+
+Timestamp
+
+Displayed in History tab.
+
+⚙️ Environment Variables (Frontend)
+VITE_SUPABASE_URL=your_project_url
+VITE_SUPABASE_ANON_KEY=your_anon_key
+
+⚙️ Supabase Secrets (Backend)
+npx supabase secrets set SUPABASE_URL=YOUR_URL
+npx supabase secrets set SUPABASE_SERVICE_ROLE_KEY=YOUR_KEY
+
+🚀 Local Development
+Frontend
 npm install
 npm run dev
-
-
-App runs at:
-
-http://localhost:5173
-
-⚙ Supabase Setup (Local or New Project)
-Install Supabase CLI
-npx supabase --version
-
-
-If not installed:
-
-npm install supabase --save-dev
-
-Login
-npx supabase login
-
-Initialize Project
-npx supabase init
-
-Create Tables
-
-Open Supabase SQL Editor and run:
-
-CREATE TABLE api_keys (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  key text UNIQUE NOT NULL,
-  name text,
-  is_active boolean DEFAULT true,
-  created_at timestamptz DEFAULT now()
-);
-
-CREATE TABLE detection_logs (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  api_key_id uuid,
-  language text,
-  result text,
-  confidence numeric,
-  created_at timestamptz DEFAULT now()
-);
 
 Deploy Edge Function
 npx supabase functions deploy detect-voice
 
-Set Secrets
-npx supabase secrets set SUPABASE_URL=YOUR_PROJECT_URL
-npx supabase secrets set SUPABASE_SERVICE_ROLE_KEY=YOUR_SERVICE_ROLE_KEY
+🧪 Local ML Prototype (Optional)
 
-🌐 Deploy Frontend (Vercel)
-npm run build
+During development, a FastAPI ML prototype was tested:
+
+http://127.0.0.1:9000/docs#/default/predict_predict_post
 
 
-Upload project to GitHub → Import into Vercel → Deploy
+Final production system uses Supabase Edge Functions.
 
-Add environment variables in Vercel:
+⚠️ Rules Compliance
 
-VITE_SUPABASE_URL
-VITE_SUPABASE_ANON_KEY
+No hard-coded outputs
 
-🔐 Security
+No external detection APIs
 
-API key required for all requests
+Real computation done
 
-Keys validated server-side
+Explainable output provided
 
-Edge Function uses service role key
+📌 Submission Info
 
-RLS enabled on tables
-✅ Project Status
+Live Website:
+https://ai-human-voice-detection-api.vercel.app
 
-✔ Frontend deployed
-✔ Backend deployed
-✔ API key authentication
-✔ Logging enabled
-✔ Documentation complete
+API Endpoint:
+https://fotuzquiawsgrofmosxv.supabase.co/functions/v1/detect-voice
+
+Sample API Key:
+Create using the website → API Keys tab
